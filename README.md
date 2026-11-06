@@ -60,6 +60,7 @@ https://doi.org/10.1038/s41597-020-00634-8
 ## Файлы проекта
 
 - [AppStatLab01.ipynb](AppStatLab01.ipynb) — основной ноутбук лабораторной работы.
+- [Копия блокнота _AppStatLab01.ipynb_](Копия блокнота _AppStatLab01.ipynb_) - ноутбук со 2 спринтом
 - [DB for chromophore_Sci_Data_rev03.csv](DB%20for%20chromophore_Sci_Data_rev03.csv) — исходный набор данных.
 - `README.md` — описание проекта и план работы.
 - 
