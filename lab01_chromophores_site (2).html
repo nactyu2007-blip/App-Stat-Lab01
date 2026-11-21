@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 01 — Статистический анализ хромофоров</title>
+<style>
+:root{--ink:#17233b;--muted:#64748b;--line:#e3eaf2;--paper:#f6f9fc;--white:#fff;--blue:#2458a6;--cyan:#0e9ca6;--violet:#7866c8;--soft:#eaf2fb;--green:#17845d;--shadow:0 14px 40px rgba(29,55,90,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}.wrap{max-width:1160px;margin:auto;padding:0 24px}
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-weight:800;letter-spacing:-.03em}.brand span{color:var(--cyan)}nav{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--muted)}nav a{color:inherit}
+.hero{padding:76px 0 56px;background:radial-gradient(circle at 85% 15%,#dff5f5 0,transparent 28%),radial-gradient(circle at 12% 70%,#e8edff 0,transparent 30%),linear-gradient(135deg,#fff,#f4f8fd)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--blue);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.dot{width:8px;height:8px;border-radius:50%;background:var(--cyan)}
+h1{font-size:clamp(38px,6vw,68px);line-height:1.04;letter-spacing:-.055em;margin:18px 0 20px;max-width:850px}h2{font-size:clamp(26px,3vw,38px);letter-spacing:-.04em;line-height:1.15;margin:0 0 12px}h3{margin:0 0 8px;font-size:19px;letter-spacing:-.02em}.lead{font-size:19px;color:#53647c;max-width:760px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.btn{border:0;border-radius:12px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--blue);color:white;display:inline-block}.btn.secondary{background:white;color:var(--blue);border:1px solid var(--line)}
+section{padding:68px 0;scroll-margin-top:80px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:28px}.kicker{font-size:12px;text-transform:uppercase;letter-spacing:.13em;color:var(--cyan);font-weight:800;margin-bottom:9px}.sub{color:var(--muted);max-width:700px;margin:0}
+.grid{display:grid;gap:18px}.metrics{grid-template-columns:repeat(4,1fr)}.three{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:repeat(2,1fr)}
+.card{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}.metric{font-size:32px;font-weight:800;letter-spacing:-.05em;margin:4px 0}.small{font-size:13px;color:var(--muted)}.tag{display:inline-block;background:var(--soft);color:var(--blue);border-radius:999px;padding:4px 9px;font-size:11px;font-weight:800}
+.number{font-size:12px;color:var(--cyan);font-weight:800;letter-spacing:.12em;margin-bottom:8px}
+.var{display:flex;align-items:flex-start;gap:14px}.symbol{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:#edf5fb;color:var(--blue);font-size:21px;font-weight:800;flex:none}
+p{margin:8px 0;color:#53647c}.callout{border-left:3px solid var(--cyan);background:#eef8f8;padding:16px 18px;border-radius:0 12px 12px 0;color:#365b64}
+.chartbox{height:260px;width:100%;position:relative}.chartbox canvas{width:100%;height:100%}.legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:12px}.key{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:700;font-size:12px}td strong{color:var(--ink)}
+.hypo{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start}.status{color:var(--green);font-size:12px;font-weight:800;background:#e8f7f0;padding:5px 9px;border-radius:999px;white-space:nowrap}
+.formrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:14px 0}.formrow label{font-size:13px;color:var(--muted);font-weight:700}.formrow input{accent-color:var(--blue)}input[type=range]{width:180px}input[type=number]{padding:9px;border:1px solid var(--line);border-radius:9px;width:90px;color:var(--ink)}
+.result{font-size:25px;font-weight:800;letter-spacing:-.04em}.bar{height:9px;border-radius:99px;background:#e9eff6;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:99px}
+footer{padding:35px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.footrow{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+@media(max-width:850px){.metrics{grid-template-columns:repeat(2,1fr)}.three{grid-template-columns:1fr}.two{grid-template-columns:1fr}nav{display:none}.section-head{display:block}}
+@media(max-width:480px){.metrics{grid-template-columns:1fr 1fr}.wrap{padding:0 16px}.hero{padding:55px 0 42px}.card{padding:18px}.metric{font-size:26px}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav"><div class="brand">LAB<span>01</span> <span style="color:#64748b;font-weight:600">/ INFOCHEM</span></div><nav><a href="#about">Исследование</a><a href="#variables">Величины</a><a href="#results">Результаты</a><a href="#sampling">Выборки</a><a href="#generator">Генератор</a><a href="#conclusion">Выводы</a></nav></div></header>
+<main>
+<section class="hero" style="padding-top:76px"><div class="wrap">
+<div class="eyebrow"><i class="dot"></i> Прикладная статистика · Лабораторная работа 01</div>
+<h1>Статистический анализ<br>оптических свойств хромофоров</h1>
+<p class="lead">Исследование экспериментальных характеристик органических соединений: распределения, зависимости, выборочные оценки и моделирование случайной величины.</p>
+<div class="hero-actions"><a class="btn" href="#results">Смотреть результаты ↓</a><a class="btn secondary" href="https://colab.research.google.com/github/nactyu2007-blip/App-Stat-Lab01/blob/main/AppStatLab01.ipynb" target="_blank" rel="noreferrer">Открыть Jupyter Notebook ↗</a></div>
+<div class="grid metrics" style="margin-top:44px">
+<div class="card"><div class="small">Экспериментальных записей</div><div class="metric">1 968</div><div class="small">рабочая совокупность</div></div>
+<div class="card"><div class="small">Случайных величин</div><div class="metric">3</div><div class="small">X, Y и Q</div></div>
+<div class="card"><div class="small">Корреляция X–Y</div><div class="metric">0,857</div><div class="small">Пирсон</div></div>
+<div class="card"><div class="small">Алгоритм генерации</div><div class="metric" style="font-size:25px">Box–Muller</div><div class="small">нормальная → логнормальная</div></div>
+</div>
+</div></section>
+
+<section id="about"><div class="wrap">
+<div class="section-head"><div><div class="kicker">01 / Контекст</div><h2>О чём это исследование</h2><p class="sub">От экспериментальных данных — к статистическому описанию и вероятностной модели.</p></div></div>
+<div class="grid two">
+<div class="card"><h3>Исследовательская задача</h3><p>Понять, как распределены оптические характеристики хромофоров, есть ли статистическая связь между ними и насколько выборочные оценки отражают характеристики исследуемого набора.</p><p>Отдельная задача второго спринта — построить генератор, моделирующий значения максимума поглощения.</p></div>
+<div class="card"><h3>Случайный эксперимент</h3><p>Из рабочего набора равновероятно выбирается одна запись. Каждой из 1 968 записей соответствует вероятность выбора 1/1 968.</p><div class="callout">Случайность задаётся процедурой выбора записи из конечной совокупности. Значения характеристик конкретной записи при этом фиксированы.</div></div>
+</div>
+<div class="card" style="margin-top:18px"><div class="number">ДИЗАЙН ИССЛЕДОВАНИЯ</div><div class="grid three">
+<div><h3>Описательный анализ</h3><p>EDA, описательные статистики, визуализация форм распределений.</p></div>
+<div><h3>Проверка гипотез</h3><p>Корреляционный анализ, сопоставление моделей распределения, оценка выборочной вариативности.</p></div>
+<div><h3>Моделирование</h3><p>Генерация синтетических значений и сравнение их статистических свойств с моделью.</p></div>
+</div></div>
+</div></section>
+
+<section id="variables" style="background:#fff"><div class="wrap">
+<div class="section-head"><div><div class="kicker">02 / Переменные</div><h2>Три исследуемые случайные величины</h2><p class="sub">Каждая величина описывает отдельную сторону оптического поведения соединения.</p></div></div>
+<div class="grid three">
+<div class="card"><div class="var"><div class="symbol">X</div><div><h3>Максимум поглощения</h3><span class="tag">нм</span></div></div><p>Длина волны, на которой наблюдается максимум поглощения света молекулой.</p><div class="small">Среднее: <strong>435,987 нм</strong><br>Медиана: <strong>409 нм</strong><br>Ст. отклонение: <strong>100,712 нм</strong></div></div>
+<div class="card"><div class="var"><div class="symbol">Y</div><div><h3>Максимум испускания</h3><span class="tag">нм</span></div></div><p>Длина волны, соответствующая максимуму флуоресцентного излучения.</p><div class="small">Среднее: <strong>515,054 нм</strong><br>Медиана: <strong>503 нм</strong><br>Ст. отклонение: <strong>95,535 нм</strong></div></div>
+<div class="card"><div class="var"><div class="symbol">Q</div><div><h3>Квантовый выход</h3><span class="tag">безразмерный</span></div></div><p>Доля поглощённых фотонов, приводящая к испусканию фотонов при флуоресценции.</p><div class="small">Среднее: <strong>0,379</strong><br>Медиана: <strong>0,329</strong><br>Ст. отклонение: <strong>0,304</strong></div></div>
+</div>
+<p class="small" style="margin-top:14px">Примечание: статистическая случайная величина определяется относительно процедуры выбора наблюдения из исследуемого набора. Это не означает, что физическое свойство одной фиксированной молекулы само по себе случайно.</p>
+</div></section>
+
+<section id="results"><div class="wrap">
+<div class="section-head"><div><div class="kicker">03 / Результаты</div><h2>Что показал анализ</h2><p class="sub">Основной результат — выраженная положительная связь между спектральными максимумами.</p></div></div>
+<div class="grid two">
+<div class="card"><h3>Корреляционная матрица</h3><table><thead><tr><th>Пара величин</th><th>Пирсон</th><th>Спирмен</th></tr></thead><tbody><tr><td>X — Y</td><td><strong>0,857</strong></td><td><strong>0,8405</strong></td></tr><tr><td>X — Q</td><td>0,022</td><td>—</td></tr><tr><td>Y — Q</td><td>-0,102</td><td>—</td></tr></tbody></table><p class="small">Для X–Y оба коэффициента указывают на сильную положительную связь.</p></div>
+<div class="card"><h3>Интерпретация</h3><p>Соединения с более высокой длиной волны максимума поглощения, как правило, имеют и более высокую длину волны максимума испускания.</p><p>Для квантового выхода линейная связь с X и Y в этой выборке практически отсутствует.</p><div class="callout">Корреляция показывает статистическую связь, но сама по себе не доказывает причинно-следственный механизм.</div></div>
+</div>
+<div class="card" style="margin-top:18px"><h3>Сравнение корреляций</h3><div class="chartbox"><canvas id="corrChart" aria-label="График коэффициентов корреляции"></canvas></div><div class="legend"><span><i class="key" style="background:#2458a6"></i>Коэффициент Пирсона</span></div></div>
+<div class="grid two" style="margin-top:18px">
+<div class="card"><div class="hypo"><h3>Гипотеза H₁: X и Y связаны положительно</h3><span class="status">Поддержана</span></div><p>Коэффициент Спирмена = 0,8405; p-value меньше 0,001. Нулевая гипотеза об отсутствии ранговой корреляции отвергается.</p></div>
+<div class="card"><div class="hypo"><h3>Гипотеза H₂: логнормальная модель описывает X и Y лучше нормальной</h3><span class="status">Поддержана по AIC</span></div><p>Для обеих величин AIC логнормальной модели ниже AIC нормальной модели.</p></div>
+</div>
+</div></section>
+
+<section id="distribution" style="background:#fff"><div class="wrap">
+<div class="section-head"><div><div class="kicker">04 / Распределения</div><h2>Выбор математической модели</h2><p class="sub">Форма распределения помогает выбрать модель, но окончательный выбор требует проверки соответствия и учёта ограничений данных.</p></div></div>
+<div class="grid two">
+<div class="card"><h3>X — максимум поглощения</h3><div class="tag">Логнормальная модель предпочтительнее по AIC</div><p>Нормальное AIC: 23 742,83</p><p>Логнормальное AIC: <strong>23 390,08</strong></p></div>
+<div class="card"><h3>Y — максимум испускания</h3><div class="tag">Логнормальная модель предпочтительнее по AIC</div><p>Нормальное AIC: 23 535,09</p><p>Логнормальное AIC: <strong>23 402,38</strong></p></div>
+<div class="card" style="grid-column:1/-1"><h3>Q — квантовый выход</h3><p>Квантовый выход ограничен интервалом [0; 1]. Бета-распределение естественно подходит для непрерывной части значений внутри (0; 1), но обычное бета-распределение не включает точные ноль и единицу. Поэтому наблюдения на границах требуют отдельного учёта в смешанной модели.</p></div>
+</div>
+</div></section>
+
+<section id="sampling"><div class="wrap">
+<div class="section-head"><div><div class="kicker">05 / Выборки</div><h2>Насколько выборка отражает совокупность?</h2><p class="sub">В ноутбуке исследуется конечная совокупность из 1 968 записей и поведение оценок при изменении объёма выборки.</p></div></div>
+<div class="grid two">
+<div class="card"><h3>Два способа отбора</h3><p><strong>С возвращением.</strong> Каждая запись после выбора возвращается в набор и может быть выбрана повторно.</p><p><strong>Без возвращения.</strong> Выбранная запись исключается из дальнейшего отбора.</p></div>
+<div class="card"><h3>Что сравнивали</h3><p>Выборочные средние и дисперсии сопоставлялись с характеристиками всей конечной совокупности. Также оценивалась ошибка оценивания при увеличении размера выборки.</p><div class="callout">В эксперименте RMSE оценок среднего и дисперсии уменьшается при росте размера выборки — это эмпирически иллюстрирует повышение точности.</div></div>
+</div>
+<div class="card" style="margin-top:18px"><h3>Интерактивная иллюстрация: ошибка оценки среднего</h3><p class="small">Схематическая зависимость масштаба ошибки от объёма выборки: 1/√n. Это иллюстрация закона убывания стандартной ошибки, а не повторный расчёт исходного датасета.</p>
+<div class="formrow"><label for="nrange">Размер выборки n</label><input id="nrange" type="range" min="20" max="1000" step="10" value="200"><strong id="nval">200</strong></div>
+<div class="result" id="errval">0,071</div><div class="small">Относительный масштаб 1 / √n</div><div class="bar"><i id="errbar" style="width:14.1%"></i></div>
+</div>
+</div></section>
+
+<section id="generator" style="background:#fff"><div class="wrap">
+<div class="section-head"><div><div class="kicker">06 / Sprint 2</div><h2>Генератор случайных величин</h2><p class="sub">Метод Бокса — Мюллера: преобразование равномерных псевдослучайных чисел в стандартные нормальные, затем — в логнормальные.</p></div></div>
+<div class="grid two">
+<div class="card"><h3>Математическая идея</h3><p>Для независимых U₁, U₂ ~ Uniform(0,1):</p><p style="font-family:ui-monospace,monospace;color:#2458a6">Z₁ = √(-2 ln U₁) · cos(2πU₂)</p><p style="font-family:ui-monospace,monospace;color:#2458a6">Z₂ = √(-2 ln U₁) · sin(2πU₂)</p><p>Полученные значения имеют стандартное нормальное распределение. Логнормальное значение получают преобразованием X = exp(μ + σZ).</p></div>
+<div class="card"><h3>Поиграть с генератором</h3><div class="formrow"><label for="count">Количество значений</label><input id="count" type="number" min="100" max="10000" step="100" value="1000"></div><div class="formrow"><label for="seed">Seed</label><input id="seed" type="number" min="1" max="999999" value="67"></div><button class="btn" id="generate">Сгенерировать</button><div class="grid three" style="margin-top:18px"><div><div class="small">Среднее</div><div class="result" id="gmean">—</div></div><div><div class="small">Ст. отклонение</div><div class="result" id="gstd">—</div></div><div><div class="small">Минимум</div><div class="result" id="gmin">—</div></div></div><p class="small" id="gstatus">Нажмите кнопку, чтобы получить новую выборку.</p></div>
+</div>
+<div class="card" style="margin-top:18px"><h3>Гистограмма сгенерированных значений</h3><div class="chartbox"><canvas id="genChart"></canvas></div><div class="callout">Интерактивный демонстрационный генератор на этой странице использует JavaScript и воспроизводимую последовательность по seed. Он иллюстрирует преобразование Бокса — Мюллера; для точного воспроизведения вычислений ноутбука используйте реализацию Python из исходной лабораторной.</div></div>
+</div></section>
+
+<section id="conclusion"><div class="wrap">
+<div class="section-head"><div><div class="kicker">07 / Итоги</div><h2>К чему пришли</h2><p class="sub">Результаты и ограничения исследования.</p></div></div>
+<div class="grid two">
+<div class="card"><h3>Основные выводы</h3><ul style="padding-left:20px;color:#53647c"><li>Между максимумами поглощения и испускания обнаружена сильная положительная корреляция.</li><li>Для X и Y логнормальная модель предпочтительнее нормальной по критерию AIC.</li><li>Для квантового выхода требуется учитывать ограниченность диапазона и возможные значения на границах.</li><li>При увеличении размера выборки точность оценок в эксперименте повышается.</li><li>Метод Бокса — Мюллера позволяет получить нормальные значения, а экспоненциальное преобразование — логнормальные.</li></ul></div>
+<div class="card"><h3>Ограничения</h3><ul style="padding-left:20px;color:#53647c"><li>Рабочий набор трактуется как конечная совокупность; выводы относятся к нему и выбранной процедуре отбора.</li><li>Корреляция не доказывает причинность.</li><li>Предпочтение по AIC не означает абсолютного доказательства истинности распределения.</li><li>Синтетические данные воспроизводят выбранную статистическую модель, а не все физико-химические механизмы эксперимента.</li></ul></div>
+</div>
+<div class="card" style="margin-top:18px;text-align:center;padding:34px"><div class="kicker">Главный результат</div><h2 style="max-width:780px;margin:0 auto 12px">От экспериментальных наблюдений — к проверяемой математической модели</h2><p style="max-width:700px;margin:auto">Статистика помогает не только описывать данные, но и проверять предположения, оценивать неопределённость и обоснованно интерпретировать результаты химических экспериментов.</p></div>
+</div></section>
+</main>
+<footer><div class="wrap footrow"><div><strong>Lab 01 · ИнфоХимия</strong><br>Прикладная статистика · 2026</div><div>Авторы: <strong>Арина Сидорова, Анастасия Короткова, Анастасия Кузнецова</strong><br><a href="https://colab.research.google.com/github/nactyu2007-blip/App-Stat-Lab01/blob/main/AppStatLab01.ipynb" target="_blank" rel="noreferrer">Исходный Jupyter Notebook ↗</a></div></div></footer>
+<script>
+function drawBars(canvas, labels, values, min, max){
+ const dpr=window.devicePixelRatio||1, r=canvas.getBoundingClientRect(); if(!r.width)return;
+ canvas.width=r.width*dpr;canvas.height=r.height*dpr;const c=canvas.getContext('2d');c.scale(dpr,dpr);
+ const w=r.width,h=r.height,L=42,R=14,T=12,B=42,plotH=h-T-B,plotW=w-L-R;
+ c.clearRect(0,0,w,h);c.strokeStyle='#e5edf5';c.fillStyle='#718198';c.font='12px system-ui';
+ for(let i=0;i<=4;i++){let y=T+plotH*i/4;c.beginPath();c.moveTo(L,y);c.lineTo(w-R,y);c.stroke();c.fillText((max-(max-min)*i/4).toFixed(1),4,y+4)}
+ let slot=plotW/labels.length,bw=Math.min(58,slot*.56);
+ values.forEach((v,i)=>{let x=L+slot*i+(slot-bw)/2,hh=(v-min)/(max-min)*plotH;c.fillStyle='#2b6cb0';c.beginPath();c.roundRect(x,T+plotH-hh,bw,hh,5);c.fill();c.fillStyle='#60738c';c.textAlign='center';c.fillText(labels[i],x+bw/2,h-14);c.textAlign='left'});
+}
+function drawHist(canvas, values){
+ const dpr=devicePixelRatio||1,r=canvas.getBoundingClientRect();if(!r.width)return;canvas.width=r.width*dpr;canvas.height=r.height*dpr;let c=canvas.getContext('2d');c.scale(dpr,dpr);
+ let w=r.width,h=r.height,L=38,R=12,T=12,B=34, bins=22, mn=Math.min(...values),mx=Math.max(...values),counts=Array(bins).fill(0);
+ values.forEach(v=>counts[Math.min(bins-1,Math.floor((v-mn)/(mx-mn||1)*bins))]++);
+ let max=Math.max(...counts)*1.12, pw=w-L-R,ph=h-T-B;c.clearRect(0,0,w,h);c.strokeStyle='#e5edf5';c.fillStyle='#6b7c93';c.font='11px system-ui';
+ for(let j=0;j<=4;j++){let y=T+ph*j/4;c.beginPath();c.moveTo(L,y);c.lineTo(w-R,y);c.stroke();c.fillText(Math.round(max*(1-j/4)),4,y+4)}
+ let sw=pw/bins;counts.forEach((v,i)=>{let bh=v/max*ph;c.fillStyle='#2897a2';c.fillRect(L+i*sw+1,T+ph-bh,Math.max(1,sw-2),bh)});
+ c.fillStyle='#6b7c93';c.fillText(mn.toFixed(0),L,h-9);c.fillText(mx.toFixed(0),w-R-28,h-9);
+}
+drawBars(document.getElementById('corrChart'),['X–Y','X–Q','Y–Q'],[.857,.022,-.102],-.2,1);
+const nr=document.getElementById('nrange');function sampleErr(){let n=+nr.value;document.getElementById('nval').textContent=n;let e=1/Math.sqrt(n);document.getElementById('errval').textContent=e.toFixed(3).replace('.',',');document.getElementById('errbar').style.width=(e*100)+'%'}nr.addEventListener('input',sampleErr);sampleErr();
+function seeded(seed){let x=seed>>>0;return ()=>{x+=0x6D2B79F5;let t=x;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296}}
+function generate(){let n=Math.max(100,Math.min(10000,+document.getElementById('count').value||1000)),seed=+document.getElementById('seed').value||67,rand=seeded(seed),vals=[];
+ // Illustrative Box-Muller transform followed by a lognormal transform.
+ // Parameters approximate the fitted shape/scale displayed in the notebook.
+ const shape=.2164,scale=425.5044,mu=Math.log(scale),sigma=shape;
+ while(vals.length<n){let u1=Math.max(rand(),1e-12),u2=rand(),rad=Math.sqrt(-2*Math.log(u1)),z1=rad*Math.cos(2*Math.PI*u2),z2=rad*Math.sin(2*Math.PI*u2);vals.push(Math.exp(mu+sigma*z1));if(vals.length<n)vals.push(Math.exp(mu+sigma*z2))}
+ let mean=vals.reduce((a,b)=>a+b,0)/n,sd=Math.sqrt(vals.reduce((a,b)=>a+(b-mean)**2,0)/n),mn=Math.min(...vals);
+ document.getElementById('gmean').textContent=mean.toFixed(1);document.getElementById('gstd').textContent=sd.toFixed(1);document.getElementById('gmin').textContent=mn.toFixed(1);document.getElementById('gstatus').textContent=`Сгенерировано ${n.toLocaleString('ru-RU')} значений · seed ${seed}`;drawHist(document.getElementById('genChart'),vals)}
+document.getElementById('generate').addEventListener('click',generate);generate();
+window.addEventListener('resize',()=>{drawBars(document.getElementById('corrChart'),['X–Y','X–Q','Y–Q'],[.857,.022,-.102],-.2,1);if(window.lastVals)drawHist(document.getElementById('genChart'),window.lastVals)});
+</script>
+</body></html>
